@@ -3,24 +3,19 @@ from client_api import HH_API_KEY, SUPERJOB_API_KEY
 import requests
 
 
-class Engine(ABC):
-    def __init__(self, search_query):
+class Vacancy:
+    def __init__(self, search_query, title=None, url=None, description=None, salary=None):
         self.search_query = search_query
-
-    @abstractmethod
-    def get_request(self):
-        pass
-
-    @staticmethod
-    def get_connector(file_name):
-            """ Возвращает экземпляр класса Connector """
-            pass
+        self.title = title  # s.get_request()['objects'][0]['profession']
+        self.url = url  # s.get_request()['objects'][0]['link']
+        self.description = description  # s.get_request()['objects'][0]['candidat']
+        self.salary = salary  # s.get_request()['objects'][0]['payment_from'], s.get_request()['objects'][0]['payment_to']
 
     def __repr__(self):
-        pass
+        return f"{self.title}, {self.url}, {self.description}, {self.salary}"
 
 
-class HH(Engine):
+class HH(Vacancy):
     def __init__(self, search_query):
         super().__init__(search_query)
 
@@ -33,7 +28,7 @@ class HH(Engine):
         return vacancy_list.json()
 
 
-class Superjob(Engine):
+class Superjob(Vacancy):
     def __init__(self, search_query):
         super().__init__(search_query)
 
