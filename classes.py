@@ -1,41 +1,61 @@
-from abc import ABC, abstractmethod
 from client_api import HH_API_KEY, SUPERJOB_API_KEY
 import requests
+from abc import ABC, abstractmethod
+from pprint import pprint
 
 
-class Vacancy:
-    def __init__(self, search_query, title=None, url=None, description=None, salary=None):
+class Engine(ABC):
+    def __init__(self, search_query):
         self.search_query = search_query
-        self.title = title  # s.get_request()['objects'][0]['profession']
-        self.url = url  # s.get_request()['objects'][0]['link']
-        self.description = description  # s.get_request()['objects'][0]['candidat']
-        self.salary = salary  # s.get_request()['objects'][0]['payment_from'], s.get_request()['objects'][0]['payment_to']
+        self.hh_headers = {"User-Agent": HH_API_KEY}
+        self.sj_headers = {"X-Api-App-Id": SUPERJOB_API_KEY}
+        self.pages_number = 50
+        self.page = 0
+        self.vacancies = []
 
-    def __repr__(self):
-        return f"{self.title}, {self.url}, {self.description}, {self.salary}"
+    @abstractmethod
+    def get_request(self):
+        pass
+
+    @staticmethod
+    def get_connector(file_name):
+        """ Возвращает экземпляр класса Connector """
+        pass
 
 
-class HH(Vacancy):
+class HH(Engine):
     def __init__(self, search_query):
         super().__init__(search_query)
 
     def get_request(self):
-        headers = {"User-Agent": HH_API_KEY}
-        params = {"text": f"{self.search_query}"}
-        vacancy_list = requests.get(f'https://api.hh.ru/vacancies/',
-                                    headers=headers,
-                                    params=params)
-        return vacancy_list.json()
+        while self.page < self.pages_number:
+            params = {"text": self.search_query, "page": self.page}
+            hh_openings = requests.get(f'https://api.HH.ru/vacancies/',
+                                       headers=self.hh_headers,
+                                       params=params).json()
+
+            self.page += 1
+
+            page_vacancies = hh_openings["items"]
+            for vacancy in page_vacancies:
+                self.vacancies.append(vacancy)
+        return self.vacancies
 
 
-class Superjob(Vacancy):
+class SuperJob(Engine):
     def __init__(self, search_query):
         super().__init__(search_query)
 
     def get_request(self):
-        headers = {"X-Api-App-Id": SUPERJOB_API_KEY}
-        params = {"keyword": f"{self.search_query}"}
-        vacancy_list = requests.get(f'https://api.superjob.ru/2.0/vacancies/',
-                                    headers=headers,
-                                    params=params)
-        return vacancy_list.json()
+        while self.page < self.pages_number:
+            params = {"keyword": self.search_query, "page": self.page}
+            js_openings = requests.get(f'https://api.superjob.ru/2.0/vacancies/',
+                                       headers=self.sj_headers,
+                                       params=params).json()
+
+            self.page += 1
+            page_vacancies = js_openings["objects"]
+            for vacancy in page_vacancies:
+                self.vacancies.append(vacancy)
+
+        return self.vacancies
