@@ -19,7 +19,6 @@ class Engine(ABC):
 
     @staticmethod
     def get_connector(file_name):
-        """ Возвращает экземпляр класса Connector """
         pass
 
 
@@ -28,14 +27,18 @@ class HH(Engine):
         super().__init__(search_query)
 
     def get_request(self):
+        """
+        Запрашивает данные по API
+        :return: список полученных по запросу вакансий
+        """
+
+        # запускаем цикл для запроса необходимого количества вакансий
         while self.page < self.pages_number:
             params = {"text": self.search_query, "page": self.page}
             hh_openings = requests.get(f'https://api.HH.ru/vacancies/',
                                        headers=self.hh_headers,
                                        params=params).json()
-
             self.page += 1
-
             page_vacancies = hh_openings["items"]
             for vacancy in page_vacancies:
                 self.vacancies.append(vacancy)
