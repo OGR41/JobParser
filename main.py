@@ -28,14 +28,24 @@ class HHVacancy(Vacancy):
         super().__init__(user_input)
         
     def hh_request(self):
+        """
+        Обрабатывает и получает необходимые данные
+        :return: список словарей с необходимыми данными
+        """
+
+        # создаем экземпляр класса HH
         hh = HH(self.user_input)
+
+        # вызываем метод get_request
         hh_list = hh.get_request()
+
+        # запускаем цикл для извлечения необходимых значений из полученного списка вакансий
         for i in range(len(hh_list)):
             name = hh_list[i]['name']
             url = hh_list[i]['alternate_url']
             responsibility = hh_list[i]['snippet']['responsibility']
             if hh_list[i]['salary'] is None:
-                salary = None
+                salary = 'не указано'
             else:
                 salary = hh_list[i]['salary']
             data = {i + 1: {"Вакансия": name, "Ссылка": url, "Описание": responsibility, "Зарплата": salary}}
