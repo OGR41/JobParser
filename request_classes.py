@@ -42,7 +42,7 @@ class SuperJob(Engine):
         self.sj_headers = {'X-Api-App-Id': SUPERJOB_API_KEY}
         self.params = {'keywords': search_query,
                        'count': 100,
-                       'page': 0}
+                       'page': self.page}
 
     def get_request(self):
         vacancies_list = []
@@ -58,8 +58,12 @@ class SuperJob(Engine):
 
 
 def main():
-    user_query = input('Введите запрос для поиска: ')
-    h = HH(user_query)
-    s = SuperJob(user_query)
-    data = {'HH': h.get_request(), 'SJ': s.get_request()}
-    return data
+    if __name__ == '__main__':
+        user_query = input('Введите запрос для поиска: ')
+        h = HH(user_query)
+        s = SuperJob(user_query)
+        data = {'HH': h.get_request(), 'SJ': s.get_request()}
+        return data['SJ']
+
+
+main()
