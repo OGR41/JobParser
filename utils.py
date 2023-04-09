@@ -1,7 +1,10 @@
 import json
-from request_classes import HeadHunter, SuperJob
-from vacancy_classes import Vacancy, HHVacancy, SJVacancy
+
 from operator import itemgetter
+
+from request_classes import HeadHunter, SuperJob
+
+from vacancy_classes import Vacancy, HHVacancy, SJVacancy
 
 
 def main(user_input):

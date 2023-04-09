@@ -1,5 +1,7 @@
 from client_api import HH_API_KEY, SUPERJOB_API_KEY
+
 from abc import ABC, abstractmethod
+
 import requests
 
 
