@@ -1,5 +1,4 @@
 from pprint import pprint
-
 from utils import main, Sort, PrintVacancy
 
 user_input = input('Выберете с какого сайта хотите получить вакансии\n'

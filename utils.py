@@ -1,9 +1,6 @@
 import json
-
 from operator import itemgetter
-
 from request_classes import HeadHunter, SuperJob
-
 from vacancy_classes import Vacancy, HHVacancy, SJVacancy
 
 
